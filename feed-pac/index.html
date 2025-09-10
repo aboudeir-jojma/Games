@@ -27,21 +27,7 @@
       touch-action: none;
       -ms-touch-action: none;
     }
-    /* ✅ Style pour l'overlay Ad Break */
-    #ad-break-overlay {
-      display: none;
-      position: fixed;
-      top: 0; left: 0;
-      width: 100vw; height: 100vh;
-      background-color: rgba(0,0,0,0.85);
-      color: white;
-      font-size: 32px;
-      font-family: sans-serif;
-      text-align: center;
-      justify-content: center;
-      align-items: center;
-      z-index: 9999;
-    }
+
   </style>
   <script type="text/javascript">
     window.SDK_OPTIONS = {
@@ -83,9 +69,6 @@
     </canvas>
   </div>
 
-  <!-- ✅ Overlay Ad Break -->
-  <div id="ad-break-overlay">Ad Break</div>
-
   <script src="jquery-3.4.1.min.js"></script>
   <script src="c2runtime.js"></script>
 
@@ -125,29 +108,7 @@
     };
   </script>
 
-  <!-- ✅ Script Ad Break logique -->
-  <script>
-    function showAdBreak() {
-      var overlay = document.getElementById('ad-break-overlay');
-      if (!overlay) return;
 
-      overlay.style.display = 'flex';
-      setTimeout(() => {
-        overlay.style.display = 'none';
-
-        // Appel pub si SDK présent
-        if (typeof sdk !== 'undefined' && typeof sdk.showBanner === 'function') {
-          sdk.showBanner();
-        }
-      }, 3000); // 3 sec
-    }
-
-    // Démarrer après 30 sec puis répéter toutes les 30 sec
-    setTimeout(() => {
-      showAdBreak();
-      setInterval(showAdBreak, 30000);
-    }, 180000);
-  </script>
 
   <script>
     if (window.location.protocol.substr(0, 4) === "file") {
