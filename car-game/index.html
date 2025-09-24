@@ -31,7 +31,15 @@
         overflow: hidden;
       }
 
-
+      /* Hide ads container if any */
+      #YYGGamesAdContainer, .YYGGamesAdBanner, .YYGGamesAdOverlay {
+        display: none !important;
+        visibility: hidden !important;
+        opacity: 0 !important;
+        pointer-events: none !important;
+        height: 0 !important;
+        width: 0 !important;
+      }
 
       @font-face {
         font-family: "Arial";
@@ -57,7 +65,12 @@
         text-align: center;
       }
     </style>
-
+    <script src="https://api.gamemonetize.com/YYGGamesForGamemonetize.js"></script>
+    <script>
+      YYGGames.setConfig({
+        gm: "6mpmshr3a56tp1x01u87xfj3i330ucdy",
+      });
+    </script>
 
     <!-- VConsole -->
     <!-- <script src="https://h5gamessdk.yyggames.com/sdk/vconsole.min.js"></script>
@@ -132,7 +145,66 @@
     <script>
       var totalGameSize = 17239242;
     </script>
+    <script>
+      // Remove or hide ads after page load
+      window.addEventListener('load', function () {
+        // Try to find and hide ad containers dynamically
+        var adContainers = document.querySelectorAll('#YYGGamesAdContainer, .YYGGamesAdBanner, .YYGGamesAdOverlay');
+        adContainers.forEach(function (el) {
+          el.style.display = 'none';
+          el.style.visibility = 'hidden';
+          el.style.opacity = '0';
+          el.style.pointerEvents = 'none';
+          el.style.height = '0';
+          el.style.width = '0';
+        });
 
+        // MutationObserver to detect new ad elements dynamically added
+        var observer = new MutationObserver(function (mutations) {
+          mutations.forEach(function (mutation) {
+            mutation.addedNodes.forEach(function (node) {
+              if (node.nodeType === 1) { // Element node
+                if (
+                  node.id === 'YYGGamesAdContainer' ||
+                  node.classList.contains('YYGGamesAdBanner') ||
+                  node.classList.contains('YYGGamesAdOverlay') ||
+                  node.tagName === 'IFRAME' ||
+                  node.tagName === 'VIDEO'
+                ) {
+                  node.style.display = 'none';
+                  node.style.visibility = 'hidden';
+                  node.style.opacity = '0';
+                  node.style.pointerEvents = 'none';
+                  node.style.height = '0';
+                  node.style.width = '0';
+                  if (node.parentNode) {
+                    node.parentNode.removeChild(node);
+                  }
+                }
+              }
+            });
+          });
+        });
+
+        observer.observe(document.body, { childList: true, subtree: true });
+
+        // Override YYGGames ad-related functions if possible
+        if (window.YYGGames) {
+          if (window.YYGGames.showAd) {
+            window.YYGGames.showAd = function () {
+              console.log('Ad blocked: showAd called');
+              return Promise.resolve();
+            };
+          }
+          if (window.YYGGames.showVideoAd) {
+            window.YYGGames.showVideoAd = function () {
+              console.log('Ad blocked: showVideoAd called');
+              return Promise.resolve();
+            };
+          }
+        }
+      });
+    </script>
   </head>
 
   <body>
@@ -154,7 +226,36 @@
           xhr.send(null);
         });
       }
+      YYGGames.showLoadingSourceScene()
+        .setAppName("Street-Car-Racing") //需要设置appName
+        .setBackgroundColor("#7cdcff") //设置背景颜色 非必填参数
+        .setGameLogoUrl("./base/logo.png") //设置游戏logo
+        .setGameBannerUrl("./base/banner.jpg"); //设置游戏banner
 
+      // 0 //144x144.png 常规(默认)
+      // 1 //144x144-stroke.png 常规有描边
+      // 2 //special1.png
+      // 3 //special2.png
+      /**
+		YAD,
+		YIV,
+		PUZZLEGAME,
+		BABYGAMES,
+		CARGAMES,
+		BESTGAMES,
+		TOPGAMES,
+		KIDSGAME,
+		FREEGAMES,
+		FREEGAME,
+		H5GAMES4U,
+		*/
+
+      YYGGames.setConfig({
+        env_logo_skin: {
+          // YIV: 1,
+          // YAD: 1,
+        },
+      });
     </script>
     <script type="text/javascript" src="index.js"></script>
   </body>
